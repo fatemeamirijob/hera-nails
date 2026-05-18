@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hera Nail — Nail Art · Editorial · Education</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  /* Landing-specific */
+  body { background: #0e0c0b; color: #f4efe9; }
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    z-index: -2;
+  }
+  .hero-bg .slide {
+    position: absolute; inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transform: scale(1.04);
+    transition: opacity 1.8s ease, transform 8s linear;
+    will-change: opacity, transform;
+  }
+  .hero-bg .slide.active {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .hero::before {
+    content: "";
+    position: absolute; inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,.45) 0%, rgba(0,0,0,.15) 30%, rgba(0,0,0,.15) 60%, rgba(0,0,0,.7) 100%);
+  }
+  .hero-inner {
+    position: relative;
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding: 0 var(--pad);
+    max-width: var(--max);
+    margin: 0 auto;
+  }
+  .hero-top {
+    padding-top: 120px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 10.5px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(244,239,233,.7);
+  }
+  .hero-top .right { display: flex; gap: 28px; }
+  .hero-center {
+    align-self: center;
+    padding: 60px 0;
+  }
+  .hero-h1 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(72px, 16vw, 240px);
+    line-height: 0.84;
+    letter-spacing: 0.005em;
+    text-transform: uppercase;
+    color: #faf6f0;
+    text-shadow: 0 2px 40px rgba(0,0,0,.25);
+  }
+  .hero-h1 .ampersand {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 0.7em;
+    color: var(--accent-soft);
+    padding: 0 0.08em;
+    vertical-align: 0.08em;
+  }
+  .hero-tag {
+    margin-top: 32px;
+    max-width: 560px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(18px, 1.6vw, 22px);
+    line-height: 1.5;
+    color: rgba(244,239,233,.88);
+  }
+  .hero-bottom {
+    padding-bottom: 56px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 24px;
+  }
+  .hero-cta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .hero-bottom .counter {
+    text-align: center;
+    font-family: var(--display);
+    font-size: 14px;
+    letter-spacing: 0.42em;
+    color: rgba(244,239,233,.6);
+  }
+  .hero-bottom .counter b { color: #faf6f0; font-weight: 400; }
+  .hero-bottom .scroll {
+    justify-self: end;
+    font-size: 10.5px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(244,239,233,.6);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .hero-bottom .scroll .bar {
+    width: 36px; height: 1px; background: currentColor;
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scaleX(.4); transform-origin: left; opacity: .5; }
+    50% { transform: scaleX(1); opacity: 1; }
+  }
+
+  /* Caption — small label that follows the current slide */
+  .hero-caption {
+    position: absolute;
+    left: var(--pad);
+    bottom: 100px;
+    z-index: 2;
+    font-size: 10.5px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(244,239,233,.65);
+    transition: opacity .8s ease;
+  }
+  @media (max-width: 820px) {
+    .hero-caption { display: none; }
+    .hero-bottom { grid-template-columns: 1fr; }
+    .hero-bottom .scroll { justify-self: start; }
+  }
+
+  /* Body sections after hero */
+  body { background: #0e0c0b; }
+  .section-light { background: var(--bg); color: var(--ink); padding: clamp(80px, 12vw, 160px) 0; }
+  .section-dark { background: #0e0c0b; color: #f4efe9; padding: clamp(80px, 12vw, 160px) 0; }
+
+  .manifesto {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 var(--pad);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: clamp(40px, 6vw, 96px);
+  }
+  @media (max-width: 720px) { .manifesto { grid-template-columns: 1fr; } }
+  .manifesto .num {
+    font-family: var(--display);
+    font-size: 14px;
+    letter-spacing: 0.4em;
+    color: var(--mute);
+    padding-top: 14px;
+  }
+  .manifesto .body {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(28px, 3.4vw, 50px);
+    line-height: 1.15;
+    letter-spacing: -0.005em;
+  }
+  .manifesto .body em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .manifesto .signoff {
+    margin-top: 36px;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--mute);
+  }
+
+  /* Pillars: three big tiles */
+  .pillars {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 0 var(--pad);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--rule);
+  }
+  @media (max-width: 820px) { .pillars { grid-template-columns: 1fr; } }
+  .pillar {
+    background: var(--bg);
+    padding: 44px 36px 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-height: 520px;
+    position: relative;
+    overflow: hidden;
+    transition: background .35s ease, color .35s ease;
+  }
+  .pillar:hover { background: var(--ink); color: var(--bg); }
+  .pillar:hover .pillar-img { opacity: 0.32; transform: scale(1.04); }
+  .pillar .pillar-num {
+    font-family: var(--display);
+    font-size: 13px;
+    letter-spacing: 0.4em;
+    color: var(--mute);
+  }
+  .pillar h3 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 48px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 1;
+    margin-top: auto;
+  }
+  .pillar p {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: 17px;
+    line-height: 1.5;
+    max-width: 28ch;
+  }
+  .pillar .pillar-img {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.18;
+    transition: opacity .5s ease, transform .8s ease;
+    z-index: 0;
+  }
+  .pillar > * { position: relative; z-index: 1; }
+  .pillar .more {
+    margin-top: 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 10.5px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 4px;
+    align-self: flex-start;
+  }
+  .pillar .more::after { content: "→"; transition: transform .25s; }
+  .pillar:hover .more::after { transform: translateX(4px); }
+
+  /* Gallery strip */
+  .strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    margin-top: 80px;
+  }
+  @media (max-width: 820px) { .strip { grid-template-columns: 1fr 1fr; } }
+  .strip a {
+    aspect-ratio: 4 / 5;
+    background-size: cover;
+    background-position: center;
+    transition: transform .8s cubic-bezier(.2,.7,.2,1);
+    filter: grayscale(.0);
+  }
+  .strip a:hover { transform: scale(1.02); }
+
+  /* Press / Marquee */
+  .marquee {
+    overflow: hidden;
+    padding: 32px 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    background: var(--bg-deep);
+  }
+  .marquee-track {
+    display: flex;
+    gap: 80px;
+    animation: scroll 38s linear infinite;
+    white-space: nowrap;
+    font-family: var(--display);
+    font-size: clamp(22px, 3vw, 36px);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .marquee-track .star { color: var(--accent); }
+  @keyframes scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header is-dark">
+  <nav class="nav">
+    <div class="nav-left">
+      <span class="dot"></span>
+      <span>Studio Open · By Appointment</span>
+    </div>
+    <a class="brand" href="index.html">
+      Hera Nail
+      <span class="sub">EST. TEHRAN — DUBAI</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu">
+      Menu <span aria-hidden="true">＋</span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="book.html">Book</a></li>
+      <li><a href="courses.html">Courses</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="editorial.html">Editorial</a></li>
+      <li><a href="press.html">Press</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<section class="hero" data-screen-label="01 Hero">
+  <div class="hero-bg" id="heroBg">
+    <div class="slide active" style="background-image:url('img/hero-01-red.jpg')" data-caption="Anthurium — Editorial 2024"></div>
+    <div class="slide" style="background-image:url('img/hero-04-lily.jpg')" data-caption="Calla — Studio Series"></div>
+    <div class="slide" style="background-image:url('img/hero-03-portrait.jpg')" data-caption="Self-portrait with Talons"></div>
+    <div class="slide" style="background-image:url('img/hero-02-mesh.jpg')" data-caption="Mesh Gauntlet — Couture"></div>
+    <div class="slide" style="background-image:url('img/hero-06-anthurium.jpg')" data-caption="Floor study — Anthurium II"></div>
+    <div class="slide" style="background-image:url('img/hero-05-laugh.jpg')" data-caption="Behind the Scenes"></div>
+  </div>
+
+  <div class="hero-inner">
+    <div class="hero-top">
+      <span>N° 01 / Index</span>
+      <div class="right">
+        <span>Nail Art</span>
+        <span>✦</span>
+        <span>Editorial</span>
+        <span>✦</span>
+        <span>Education</span>
+      </div>
+    </div>
+
+    <div class="hero-center">
+      <h1 class="hero-h1">Hera<br>Nail<span class="ampersand">&</span>Art</h1>
+      <p class="hero-tag">A studio for sculptural nails, editorial collaboration, and the slow craft of teaching it forward — a Dubai-based atelier by Hera (Fateme Amiri).</p>
+    </div>
+
+    <div class="hero-bottom">
+      <div class="hero-cta">
+        <a class="btn accent" href="book.html">Book a session <span class="arrow">→</span></a>
+        <a class="btn" href="shop.html" style="border-color:rgba(244,239,233,.6)">Visit the shop</a>
+      </div>
+      <div class="counter"><b id="slideIdx">01</b> &nbsp;/&nbsp; 06</div>
+      <div class="scroll"><span>Scroll</span><span class="bar"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- Manifesto -->
+<section class="section-light">
+  <div class="manifesto">
+    <div class="num">N° 02<br>Manifesto</div>
+    <div>
+      <p class="body">
+        Hera Nail is a Dubai-based atelier and a hand-built practice. Each set is sculpted, painted, and finished by Fateme — a one-woman studio balancing the rigor of <em>editorial</em> work with the intimacy of a private session, and the patience of <em>teaching</em>.
+      </p>
+      <p class="signoff">— Fateme Amiri, founder</p>
+    </div>
+  </div>
+</section>
+
+<!-- Three pillars -->
+<section class="section-light" style="padding-top:0">
+  <div class="shell" style="margin-bottom:48px; display:flex; justify-content:space-between; align-items:end; gap:24px; flex-wrap:wrap;">
+    <h2 class="h-section">Three Hands,<br>One Studio</h2>
+    <p class="eyebrow">N° 03 · Practice</p>
+  </div>
+  <div class="pillars">
+    <a class="pillar" href="book.html">
+      <div class="pillar-img" style="background-image:url('img/nail-clear-flowers-02.jpg')"></div>
+      <span class="pillar-num">i.</span>
+      <h3>Custom<br>Sets</h3>
+      <p>Made-to-measure press-ons and in-studio sessions — bridal, editorial, or pure indulgence.</p>
+      <span class="more">Book a session</span>
+    </a>
+    <a class="pillar" href="courses.html">
+      <div class="pillar-img" style="background-image:url('img/nail-blue-baroque.jpg')"></div>
+      <span class="pillar-num">ii.</span>
+      <h3>Online<br>Courses</h3>
+      <p>From foundation to advanced 3D sculpting — learn the Hera method at your own pace.</p>
+      <span class="more">View curriculum</span>
+    </a>
+    <a class="pillar" href="shop.html">
+      <div class="pillar-img" style="background-image:url('img/nail-red-silver.jpg')"></div>
+      <span class="pillar-num">iii.</span>
+      <h3>The<br>Shop</h3>
+      <p>Press-on collections, cuticle oil, tools, and a handful of original paintings.</p>
+      <span class="more">Enter the shop</span>
+    </a>
+  </div>
+</section>
+
+<!-- Marquee -->
+<div class="marquee">
+  <div class="marquee-track">
+    <span>Odalisque Magazine</span><span class="star">✦</span>
+    <span>Vogue Italia Photo</span><span class="star">✦</span>
+    <span>HIA Magazine</span><span class="star">✦</span>
+    <span>L'Officiel Arabia</span><span class="star">✦</span>
+    <span>Schön! Magazine</span><span class="star">✦</span>
+    <span>Numéro Berlin</span><span class="star">✦</span>
+    <!-- duplicate for seamless scroll -->
+    <span>Odalisque Magazine</span><span class="star">✦</span>
+    <span>Vogue Italia Photo</span><span class="star">✦</span>
+    <span>HIA Magazine</span><span class="star">✦</span>
+    <span>L'Officiel Arabia</span><span class="star">✦</span>
+    <span>Schön! Magazine</span><span class="star">✦</span>
+    <span>Numéro Berlin</span><span class="star">✦</span>
+  </div>
+</div>
+
+<!-- Editorial preview strip -->
+<section class="section-light" style="padding-top:clamp(80px,10vw,140px)">
+  <div class="shell" style="display:flex; justify-content:space-between; align-items:end; gap:24px; flex-wrap:wrap;">
+    <div>
+      <p class="eyebrow">N° 04 · From the Archive</p>
+      <h2 class="h-section" style="margin-top:12px">Editorial<br>Work</h2>
+    </div>
+    <a class="btn ghost" href="editorial.html">View the portfolio <span class="arrow">→</span></a>
+  </div>
+  <div class="strip shell" style="padding-left:var(--pad); padding-right:var(--pad)">
+    <a href="editorial.html" style="background-image:url('img/hero-07-vogue.jpg')"></a>
+    <a href="editorial.html" style="background-image:url('img/ed-veil.jpg')"></a>
+    <a href="editorial.html" style="background-image:url('img/ed-white.jpg')"></a>
+    <a href="editorial.html" style="background-image:url('img/ed-lips.jpg')"></a>
+  </div>
+</section>
+
+<!-- Closing CTA -->
+<section class="section-dark" style="text-align:center">
+  <div class="shell">
+    <p class="eyebrow" style="color:rgba(244,239,233,.55)">N° 05 · Let's Create</p>
+    <h2 class="h-display" style="color:#faf6f0; margin-top:24px">Let's make<br><em style="font-family:var(--serif); font-style:italic; color:var(--accent-soft)">something</em><br>together.</h2>
+    <div style="margin-top:48px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">
+      <a class="btn accent" href="contact.html">Get in touch <span class="arrow">→</span></a>
+      <a class="btn" href="book.html" style="border-color:rgba(244,239,233,.6)">Book a session</a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div>
+      <div class="footer-mark">Hera Nail</div>
+      <p style="margin-top:18px; font-family:var(--serif); font-style:italic; font-size:16px; color:var(--ink-soft); max-width:32ch;">Nail art, editorial &amp; education from the Dubai studio of Hera (Fateme Amiri).</p>
+    </div>
+    <div>
+      <h4>Visit</h4>
+      <a href="book.html">Book a session</a>
+      <a href="courses.html">Online courses</a>
+      <a href="shop.html">The shop</a>
+    </div>
+    <div>
+      <h4>About</h4>
+      <a href="editorial.html">Editorial</a>
+      <a href="press.html">Press &amp; features</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div>
+      <h4>Follow</h4>
+      <a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://tiktok.com" target="_blank" rel="noopener">TikTok</a>
+      <a href="https://youtube.com" target="_blank" rel="noopener">YouTube</a>
+      <a href="mailto:fatemeamiri.job@gmail.com">Email</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 Hera Nail Studio</span>
+    <span>All rights reserved</span>
+  </div>
+</footer>
+
+<script>
+  // Mobile nav
+  const tog = document.getElementById('navToggle');
+  const links = document.getElementById('navLinks');
+  tog?.addEventListener('click', () => links.classList.toggle('open'));
+
+  // Hero slideshow — fade in/out
+  const slides = document.querySelectorAll('#heroBg .slide');
+  const cap = document.getElementById('heroCap');
+  const idxEl = document.getElementById('slideIdx');
+  let i = 0;
+  const total = slides.length;
+  function tick() {
+    slides[i].classList.remove('active');
+    i = (i + 1) % total;
+    slides[i].classList.add('active');
+    if (cap) {
+      cap.style.opacity = 0;
+      setTimeout(() => {
+        cap.textContent = slides[i].dataset.caption || '';
+        cap.style.opacity = 1;
+      }, 600);
+    }
+    if (idxEl) idxEl.textContent = String(i + 1).padStart(2, '0');
+  }
+  setInterval(tick, 4800);
+
+  // Reveal-on-scroll
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Book a Session — Hera Nail</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  .book-wrap {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 0 var(--pad);
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: clamp(40px, 6vw, 96px);
+    align-items: start;
+  }
+  @media (max-width: 920px) { .book-wrap { grid-template-columns: 1fr; } }
+
+  .book-side img { width: 100%; aspect-ratio: 3/4; object-fit: cover; }
+  .book-side .caption {
+    margin-top: 14px;
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+
+  .form {
+    display: grid;
+    gap: 24px;
+    padding: clamp(28px, 4vw, 56px);
+    background: var(--bg-deep);
+    border: 1px solid var(--rule);
+  }
+  .field { display: grid; gap: 10px; }
+  .field label {
+    font-size: 10.5px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--mute);
+    font-weight: 500;
+  }
+  .field input,
+  .field textarea,
+  .field select {
+    border: 0;
+    border-bottom: 1px solid var(--ink);
+    padding: 12px 0;
+    font-family: var(--serif);
+    font-size: 19px;
+    background: transparent;
+    color: var(--ink);
+    transition: border-color .3s;
+  }
+  .field input:focus,
+  .field textarea:focus,
+  .field select:focus { outline: none; border-bottom-color: var(--accent); }
+  .field textarea { resize: vertical; min-height: 96px; font-family: var(--serif); }
+  .field select { appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path fill='none' stroke='%23222' stroke-width='1.2' d='M1 1l5 5 5-5'/></svg>"); background-repeat: no-repeat; background-position: right 4px center; padding-right: 24px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 560px) { .field-row { grid-template-columns: 1fr; } }
+
+  .service-chips {
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .service-chips label {
+    cursor: pointer;
+    padding: 10px 14px;
+    border: 1px solid var(--rule);
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    transition: all .25s;
+    user-select: none;
+  }
+  .service-chips input { display: none; }
+  .service-chips input:checked + span { color: var(--bg); }
+  .service-chips label:has(input:checked) { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+  .submit-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    border-top: 1px solid var(--rule); padding-top: 24px;
+    flex-wrap: wrap;
+  }
+  .submit-row .note {
+    font-family: var(--serif); font-style: italic; color: var(--mute); font-size: 14px; max-width: 36ch;
+  }
+
+  .session-types {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2px;
+    margin-top: 60px;
+    background: var(--rule);
+  }
+  @media (max-width: 820px) { .session-types { grid-template-columns: 1fr; } }
+  .session-types .card {
+    background: var(--bg);
+    padding: 32px;
+    display: flex; flex-direction: column; gap: 12px;
+    min-height: 240px;
+  }
+  .session-types .card .price {
+    font-family: var(--display);
+    font-size: 40px;
+    line-height: 1;
+    margin-top: auto;
+  }
+  .session-types .card h4 {
+    font-family: var(--display);
+    font-size: 22px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+  .session-types .card p { font-family: var(--serif); font-size: 16px; line-height: 1.5; color: var(--ink-soft); }
+  .session-types .card .duration {
+    font-size: 10.5px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--mute);
+  }
+
+  /* Price list (studio menu) */
+  .price-list {
+    margin-top: 28px;
+    display: grid;
+    gap: 0;
+    max-width: 880px;
+  }
+  .price-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: baseline;
+    gap: 16px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .price-row:first-child { border-top: 1px solid var(--rule); }
+  .price-row .svc {
+    font-family: var(--display);
+    font-size: clamp(20px, 2.2vw, 28px);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .price-row .dots {
+    border-bottom: 1px dotted var(--rule);
+    transform: translateY(-6px);
+  }
+  .price-row .amt {
+    font-family: var(--serif);
+    font-size: clamp(17px, 1.8vw, 22px);
+    color: var(--ink);
+  }
+
+  /* Toast confirmation */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--ink); color: var(--bg);
+    padding: 16px 22px; max-width: 360px;
+    font-family: var(--serif); font-size: 15px;
+    box-shadow: 0 12px 40px rgba(0,0,0,.18);
+    transform: translateY(120%); transition: transform .45s cubic-bezier(.2,.7,.2,1);
+    z-index: 100;
+  }
+  .toast.show { transform: translateY(0); }
+  .toast::before { content: "✦"; color: var(--accent-soft); margin-right: 8px; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav">
+    <div class="nav-left"><span class="dot"></span><span>Studio Open · By Appointment</span></div>
+    <a class="brand" href="index.html">Hera Nail<span class="sub">EST. TEHRAN — DUBAI</span></a>
+    <button class="nav-toggle" id="navToggle">Menu <span aria-hidden="true">＋</span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="book.html" class="active">Book</a></li>
+      <li><a href="courses.html">Courses</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="editorial.html">Editorial</a></li>
+      <li><a href="press.html">Press</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <section class="shell" data-screen-label="01 Book intro">
+    <div class="page-intro">
+      <div>
+        <p class="eyebrow">N° 01 · Services &amp; Booking</p>
+        <h1 class="h-display" style="margin-top:24px">Book your<br><em style="font-family:var(--serif); font-style:italic; color:var(--accent)">session</em></h1>
+      </div>
+      <div class="meta">
+        <span class="num">— Dubai Studio · By Appointment</span>
+        <p class="italic-lead">Request a slot below. Hera will reply by WhatsApp or email within 24 hours to confirm your date, time, and a small deposit.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="shell" style="padding-top:80px" data-screen-label="02 Service menu">
+    <p class="eyebrow" style="margin-bottom:16px">N° 02 · Nail Services</p>
+    <h2 class="h-section">Studio<br>menu</h2>
+    <div class="price-list">
+      <div class="price-row"><span class="svc">Extensions</span><span class="dots"></span><span class="amt">400 – 450 AED</span></div>
+      <div class="price-row"><span class="svc">Refill</span><span class="dots"></span><span class="amt">250 AED</span></div>
+      <div class="price-row"><span class="svc">Nail Art</span><span class="dots"></span><span class="amt">50 – 200 AED</span></div>
+      <div class="price-row"><span class="svc">Manicure</span><span class="dots"></span><span class="amt">90 AED</span></div>
+      <div class="price-row"><span class="svc">Gel Color · Hands</span><span class="dots"></span><span class="amt">150 AED</span></div>
+      <div class="price-row"><span class="svc">Gel Color · Feet</span><span class="dots"></span><span class="amt">100 AED</span></div>
+      <div class="price-row"><span class="svc">French Gel</span><span class="dots"></span><span class="amt">50 AED</span></div>
+      <div class="price-row"><span class="svc">Removal</span><span class="dots"></span><span class="amt">Complimentary</span></div>
+      <div class="price-row"><span class="svc">Editorial / Couture sets</span><span class="dots"></span><span class="amt">On request</span></div>
+      <div class="price-row"><span class="svc">Bridal &amp; on-location</span><span class="dots"></span><span class="amt">On request</span></div>
+    </div>
+    <p style="font-family:var(--serif); font-style:italic; color:var(--mute); margin-top:18px; font-size:14px;">Art design fees vary with complexity. All prices in UAE Dirham (AED).</p>
+  </section>
+
+  <section class="shell" style="padding-top:clamp(80px,10vw,140px)" data-screen-label="03 Request form">
+    <div class="book-wrap">
+      <div class="book-side">
+        <img src="img/hero-04-lily.jpg" alt="Hera with calla lily and metal mesh gauntlet">
+        <p class="caption">— Studio session, Spring 2024. Photo: A. Karimi.</p>
+      </div>
+
+      <form class="form" id="bookingForm" novalidate>
+        <p class="eyebrow">Request a booking</p>
+        <h3 class="h-section" style="font-size:34px; margin-top:-8px">Tell me about<br>your vision.</h3>
+
+        <div class="field">
+          <label for="name">Full name</label>
+          <input type="text" id="name" required placeholder="Your name">
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="email">Email</label>
+            <input type="email" id="email" required placeholder="your@email.com">
+          </div>
+          <div class="field">
+            <label for="phone">Phone (optional)</label>
+            <input type="tel" id="phone" placeholder="+98 ···">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Service</label>
+          <div class="service-chips">
+            <label><input type="radio" name="service" value="Extensions"><span>Extensions</span></label>
+            <label><input type="radio" name="service" value="Refill"><span>Refill</span></label>
+            <label><input type="radio" name="service" value="Nail Art"><span>Nail Art</span></label>
+            <label><input type="radio" name="service" value="Manicure"><span>Manicure</span></label>
+            <label><input type="radio" name="service" value="Gel Color"><span>Gel Color</span></label>
+            <label><input type="radio" name="service" value="French Gel"><span>French Gel</span></label>
+            <label><input type="radio" name="service" value="Editorial / Couture"><span>Editorial / Couture</span></label>
+            <label><input type="radio" name="service" value="Bridal / On-location"><span>Bridal / On-location</span></label>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="date">Preferred date</label>
+            <input type="date" id="date">
+          </div>
+          <div class="field">
+            <label for="time">Preferred time</label>
+            <select id="time">
+              <option value="">Select…</option>
+              <option>Morning · 09:00–12:00</option>
+              <option>Afternoon · 12:00–16:00</option>
+              <option>Evening · 16:00–19:00</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="notes">Inspiration / notes</label>
+          <textarea id="notes" placeholder="Describe your vision — colors, references, occasion…"></textarea>
+        </div>
+
+        <div class="submit-row">
+          <p class="note">By submitting, your email client will open with the request prefilled. Or send directly to fatemeamiri.job@gmail.com.</p>
+          <button class="btn accent" type="submit">Send request <span class="arrow">✦</span></button>
+        </div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<div class="toast" id="toast">Your email draft has opened — review and send to confirm your request.</div>
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div><div class="footer-mark">Hera Nail</div><p style="margin-top:18px; font-family:var(--serif); font-style:italic; font-size:16px; color:var(--ink-soft); max-width:32ch;">Nail art, editorial &amp; education from the Dubai studio of Hera (Fateme Amiri).</p></div>
+    <div><h4>Visit</h4><a href="book.html">Book a session</a><a href="courses.html">Online courses</a><a href="shop.html">The shop</a></div>
+    <div><h4>About</h4><a href="editorial.html">Editorial</a><a href="press.html">Press &amp; features</a><a href="contact.html">Contact</a></div>
+    <div><h4>Follow</h4><a href="#">Instagram</a><a href="#">TikTok</a><a href="#">YouTube</a><a href="mailto:fatemeamiri.job@gmail.com">Email</a></div>
+  </div>
+  <div class="footer-bottom"><span>© 2024 Hera Nail Studio</span><span>All rights reserved</span></div>
+</footer>
+
+<script>
+  const tog = document.getElementById('navToggle');
+  const links = document.getElementById('navLinks');
+  tog?.addEventListener('click', () => links.classList.toggle('open'));
+
+  const form = document.getElementById('bookingForm');
+  const toast = document.getElementById('toast');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const service = (form.querySelector('input[name="service"]:checked') || {}).value || '—';
+    const date = document.getElementById('date').value;
+    const time = document.getElementById('time').value;
+    const notes = document.getElementById('notes').value.trim();
+
+    if (!name || !email) {
+      alert('Please add your name and email so I can reply.');
+      return;
+    }
+
+    const subject = `Booking request · ${service} · ${name}`;
+    const body =
+`Hi Hera,
+
+I'd like to request a booking.
+
+Name:     ${name}
+Email:    ${email}
+Phone:    ${phone || '—'}
+Service:  ${service}
+Date:     ${date || 'Flexible'}
+Time:     ${time || 'Flexible'}
+
+Inspiration / notes:
+${notes || '(none)'}
+
+— Sent from heranail.com booking form
+`;
+
+    const href = `mailto:fatemeamiri.job@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = href;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 6000);
+  });
+</script>
+</body>
+</html>

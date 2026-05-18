@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contact — Hera Nail</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  .contact-wrap {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: clamp(60px, 9vw, 130px) var(--pad) 80px;
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: clamp(40px, 6vw, 96px);
+  }
+  @media (max-width: 920px) { .contact-wrap { grid-template-columns: 1fr; } }
+
+  .channels { margin-top: 32px; }
+  .channel {
+    padding: 24px 0;
+    border-top: 1px solid var(--rule);
+    display: grid;
+    grid-template-columns: 140px 1fr auto;
+    gap: 24px;
+    align-items: center;
+  }
+  .channel:last-of-type { border-bottom: 1px solid var(--rule); }
+  .channel .key {
+    font-size: 10.5px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--mute);
+    font-weight: 500;
+  }
+  .channel .val {
+    font-family: var(--display);
+    font-size: 26px;
+    letter-spacing: 0.04em;
+  }
+  .channel .val small {
+    display: block;
+    margin-top: 4px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--ink-soft);
+    letter-spacing: 0;
+    text-transform: none;
+  }
+  .channel a.btn { padding: 10px 18px; font-size: 10px; }
+
+  @media (max-width: 600px) {
+    .channel { grid-template-columns: 1fr; gap: 6px; }
+    .channel a.btn { justify-self: start; margin-top: 8px; }
+  }
+
+  .contact-form {
+    padding: clamp(28px, 4vw, 48px);
+    background: var(--bg-deep);
+    border: 1px solid var(--rule);
+    display: grid; gap: 22px;
+  }
+  .field { display: grid; gap: 8px; }
+  .field label { font-size: 10.5px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--mute); font-weight: 500; }
+  .field input, .field textarea, .field select {
+    border: 0; border-bottom: 1px solid var(--ink);
+    padding: 10px 0;
+    font-family: var(--serif); font-size: 18px;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus { outline: none; border-bottom-color: var(--accent); }
+  .field textarea { resize: vertical; min-height: 120px; }
+
+  .image-strip {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 0 var(--pad);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  @media (max-width: 720px) { .image-strip { grid-template-columns: 1fr; } }
+  .image-strip div {
+    aspect-ratio: 4/5;
+    background-size: cover;
+    background-position: center;
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav">
+    <div class="nav-left"><span class="dot"></span><span>Get in Touch</span></div>
+    <a class="brand" href="index.html">Hera Nail<span class="sub">EST. TEHRAN — DUBAI</span></a>
+    <button class="nav-toggle" id="navToggle">Menu <span aria-hidden="true">＋</span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="book.html">Book</a></li>
+      <li><a href="courses.html">Courses</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="editorial.html">Editorial</a></li>
+      <li><a href="press.html">Press</a></li>
+      <li><a href="contact.html" class="active">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <section class="contact-wrap" data-screen-label="01 Contact">
+    <div>
+      <p class="eyebrow">N° 01 · Get In Touch</p>
+      <h1 class="h-display" style="margin-top:24px">Let's create<br><em style="font-family:var(--serif); font-style:italic; color:var(--accent)">something</em></h1>
+      <p class="italic-lead" style="max-width:46ch; margin-top:24px">For bookings, collaborations, editorial projects, and press enquiries from her Dubai studio — write directly, or use the form. Hera answers her own inbox.</p>
+
+      <div class="channels">
+        <div class="channel">
+          <span class="key">Email</span>
+          <span class="val">fatemeamiri.job@gmail.com
+            <small>Replies within 48 hours</small>
+          </span>
+          <a class="btn" href="mailto:fatemeamiri.job@gmail.com">Compose ✦</a>
+        </div>
+        <div class="channel">
+          <span class="key">Instagram</span>
+          <span class="val">@hera.nail
+            <small>Daily work · DMs open</small>
+          </span>
+          <a class="btn" href="https://instagram.com" target="_blank" rel="noopener">Open ↗</a>
+        </div>
+        <div class="channel">
+          <span class="key">TikTok</span>
+          <span class="val">@heranailstudio
+            <small>Process videos &amp; tutorials</small>
+          </span>
+          <a class="btn" href="https://tiktok.com" target="_blank" rel="noopener">Open ↗</a>
+        </div>
+        <div class="channel">
+          <span class="key">YouTube</span>
+          <span class="val">Hera Nail Studio
+            <small>Long-form lessons &amp; lookbooks</small>
+          </span>
+          <a class="btn" href="https://youtube.com" target="_blank" rel="noopener">Open ↗</a>
+        </div>
+        <div class="channel">
+          <span class="key">Studio</span>
+          <span class="val">By appointment only
+            <small>Dubai, UAE · address shared on confirmation</small>
+          </span>
+          <a class="btn" href="book.html">Book ✦</a>
+        </div>
+      </div>
+    </div>
+
+    <form class="contact-form" id="contactForm">
+      <p class="eyebrow">Quick message</p>
+      <h2 class="h-section" style="font-size:32px; margin-top:-8px">Write a<br>line.</h2>
+
+      <div class="field">
+        <label for="cName">Your name</label>
+        <input type="text" id="cName" required>
+      </div>
+      <div class="field">
+        <label for="cEmail">Email</label>
+        <input type="email" id="cEmail" required>
+      </div>
+      <div class="field">
+        <label for="cReason">Reason</label>
+        <select id="cReason">
+          <option>General enquiry</option>
+          <option>Editorial / campaign</option>
+          <option>Press &amp; interview</option>
+          <option>Wholesale &amp; stockist</option>
+          <option>Mentorship &amp; teaching</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="cMsg">Message</label>
+        <textarea id="cMsg" required placeholder="A few lines about your project, timing, and what you'd love to make together…"></textarea>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end;">
+        <button class="btn accent" type="submit">Send <span class="arrow">→</span></button>
+      </div>
+    </form>
+  </section>
+
+  <section class="image-strip" data-screen-label="02 Image strip">
+    <div style="background-image:url('img/hero-03-portrait.jpg')"></div>
+    <div style="background-image:url('img/hero-02-mesh.jpg')"></div>
+    <div style="background-image:url('img/hero-04-lily.jpg')"></div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div><div class="footer-mark">Hera Nail</div><p style="margin-top:18px; font-family:var(--serif); font-style:italic; font-size:16px; color:var(--ink-soft); max-width:32ch;">Nail art, editorial &amp; education from the Dubai studio of Hera (Fateme Amiri).</p></div>
+    <div><h4>Visit</h4><a href="book.html">Book a session</a><a href="courses.html">Online courses</a><a href="shop.html">The shop</a></div>
+    <div><h4>About</h4><a href="editorial.html">Editorial</a><a href="press.html">Press &amp; features</a><a href="contact.html">Contact</a></div>
+    <div><h4>Follow</h4><a href="#">Instagram</a><a href="#">TikTok</a><a href="#">YouTube</a><a href="mailto:fatemeamiri.job@gmail.com">Email</a></div>
+  </div>
+  <div class="footer-bottom"><span>© 2024 Hera Nail Studio</span><span>All rights reserved</span></div>
+</footer>
+
+<script>
+  const tog = document.getElementById('navToggle');
+  const links = document.getElementById('navLinks');
+  tog?.addEventListener('click', () => links.classList.toggle('open'));
+
+  document.getElementById('contactForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('cName').value.trim();
+    const email = document.getElementById('cEmail').value.trim();
+    const reason = document.getElementById('cReason').value;
+    const msg = document.getElementById('cMsg').value.trim();
+    if (!name || !email || !msg) return;
+    const subject = `${reason} · ${name}`;
+    const body = `From:  ${name} <${email}>\nReason: ${reason}\n\n${msg}\n\n— heranail.com contact form`;
+    window.location.href = `mailto:fatemeamiri.job@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  });
+</script>
+</body>
+</html>

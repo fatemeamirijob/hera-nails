@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Courses — Hera Nail</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  /* Filter dropdown */
+  .filter-bar {
+    display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: 24px var(--pad);
+    max-width: var(--max);
+    margin: 60px auto 0;
+  }
+  .filter-bar .label {
+    font-size: 10.5px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--mute); font-weight: 500;
+  }
+  .dropdown {
+    position: relative;
+  }
+  .dropdown summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 10px 16px 10px 0;
+    font-family: var(--serif);
+    font-size: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .dropdown summary::-webkit-details-marker { display: none; }
+  .dropdown summary::after {
+    content: "▾";
+    font-size: 14px;
+    color: var(--mute);
+    transition: transform .3s;
+  }
+  .dropdown[open] summary::after { transform: rotate(180deg); }
+  .dropdown .menu {
+    position: absolute;
+    top: 100%; left: -8px;
+    min-width: 260px;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    box-shadow: 0 24px 64px rgba(0,0,0,.06);
+    padding: 8px 0;
+    z-index: 20;
+  }
+  .dropdown .menu button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 12px 20px;
+    font-family: var(--serif);
+    font-size: 17px;
+    transition: background .2s;
+  }
+  .dropdown .menu button:hover { background: var(--bg-deep); color: var(--accent); }
+  .dropdown .menu button.is-active::before { content: "✦  "; color: var(--accent); }
+
+  .filter-spacer { flex: 1; }
+  .filter-count { font-size: 10.5px; letter-spacing: 0.34em; text-transform: uppercase; color: var(--mute); }
+
+  /* Course rows */
+  .courses {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 0 var(--pad);
+  }
+  .course {
+    border-bottom: 1px solid var(--rule);
+    transition: background .3s;
+  }
+  .course summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 32px 0;
+    display: grid;
+    grid-template-columns: 80px 1.4fr 1fr 0.8fr 28px;
+    align-items: center;
+    gap: 24px;
+    transition: padding .3s;
+  }
+  .course summary::-webkit-details-marker { display: none; }
+  @media (max-width: 820px) {
+    .course summary { grid-template-columns: 50px 1fr 28px; }
+    .course summary .col-tags, .course summary .col-meta { display: none; }
+  }
+  .course[open] summary { padding-top: 36px; padding-bottom: 24px; }
+  .course summary:hover .title { color: var(--accent); }
+
+  .col-num {
+    font-family: var(--display);
+    font-size: 14px;
+    letter-spacing: 0.3em;
+    color: var(--mute);
+  }
+  .col-title .title {
+    font-family: var(--display);
+    font-size: clamp(28px, 3.6vw, 44px);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    transition: color .3s;
+    font-weight: 400;
+  }
+  .col-title .sub {
+    margin-top: 8px;
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 17px;
+  }
+  .col-tags {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .tag {
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    padding: 6px 10px;
+    border: 1px solid var(--rule);
+    color: var(--ink-soft);
+  }
+  .col-meta {
+    text-align: right;
+  }
+  .col-meta .price {
+    font-family: var(--display);
+    font-size: 20px;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .col-meta .dur {
+    margin-top: 6px;
+    font-size: 10.5px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--mute);
+  }
+  .col-chev {
+    text-align: center;
+    font-size: 22px;
+    color: var(--mute);
+    transition: transform .3s, color .3s;
+  }
+  .course[open] .col-chev { transform: rotate(45deg); color: var(--accent); }
+
+  /* Expanded panel */
+  .panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(28px, 4vw, 64px);
+    padding: 8px 0 56px 80px;
+    align-items: start;
+  }
+  @media (max-width: 820px) { .panel { grid-template-columns: 1fr; padding: 8px 0 32px 50px; } }
+  .panel .img {
+    aspect-ratio: 4/5;
+    background-size: cover;
+    background-position: center;
+  }
+  .panel .desc {
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+  .panel h4 {
+    font-family: var(--sans);
+    font-size: 10.5px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--mute);
+    font-weight: 500;
+    margin-top: 24px;
+    margin-bottom: 10px;
+  }
+  .panel ol, .panel ul {
+    margin: 0;
+    padding-left: 18px;
+    font-family: var(--serif);
+    font-size: 16px;
+    line-height: 1.7;
+  }
+  .panel .actions {
+    display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap;
+  }
+
+  /* Hero composition */
+  .courses-hero {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: clamp(40px, 6vw, 96px);
+    align-items: end;
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: clamp(60px, 9vw, 130px) var(--pad) 0;
+  }
+  @media (max-width: 820px) { .courses-hero { grid-template-columns: 1fr; align-items: start; padding-top: 60px; } }
+  .courses-hero .side img {
+    width: 100%; aspect-ratio: 4/5; object-fit: cover;
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav">
+    <div class="nav-left"><span class="dot"></span><span>Self-Paced · Lifetime Access</span></div>
+    <a class="brand" href="index.html">Hera Nail<span class="sub">EST. TEHRAN — DUBAI</span></a>
+    <button class="nav-toggle" id="navToggle">Menu <span aria-hidden="true">＋</span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="book.html">Book</a></li>
+      <li><a href="courses.html" class="active">Courses</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="editorial.html">Editorial</a></li>
+      <li><a href="press.html">Press</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <section class="courses-hero" data-screen-label="01 Courses hero">
+    <div>
+      <p class="eyebrow">N° 01 · Online Education</p>
+      <h1 class="h-display" style="margin-top:24px">Learn<br><em style="font-family:var(--serif); font-style:italic; color:var(--accent)">online</em></h1>
+      <p class="italic-lead" style="max-width:42ch; margin-top:24px">Eight modular courses — from cuticle care fundamentals to sculptural 3D florals. Watch on your phone, practice in the kitchen, ask questions in the cohort chat.</p>
+    </div>
+    <div class="side">
+      <img src="img/nail-clear-flower.jpg" alt="Hands with sculpted clear-resin floral nails">
+    </div>
+  </section>
+
+  <!-- Dropdown filter -->
+  <div class="filter-bar" data-screen-label="02 Filter">
+    <span class="label">Browse by</span>
+    <details class="dropdown" id="levelDD">
+      <summary id="levelLabel">All levels</summary>
+      <div class="menu">
+        <button class="is-active" data-level="all">All levels</button>
+        <button data-level="foundation">Foundation</button>
+        <button data-level="intermediate">Intermediate</button>
+        <button data-level="advanced">Advanced</button>
+        <button data-level="masterclass">Masterclass</button>
+      </div>
+    </details>
+    <details class="dropdown" id="topicDD">
+      <summary id="topicLabel">All topics</summary>
+      <div class="menu">
+        <button class="is-active" data-topic="all">All topics</button>
+        <button data-topic="sculpt">Sculpting &amp; Extensions</button>
+        <button data-topic="3d">3D &amp; Sculptural Art</button>
+        <button data-topic="paint">Hand-painting</button>
+        <button data-topic="chrome">Chrome &amp; Foils</button>
+        <button data-topic="business">Business</button>
+      </div>
+    </details>
+    <span class="filter-spacer"></span>
+    <span class="filter-count" id="count">6 courses</span>
+  </div>
+
+  <!-- Course list -->
+  <section class="courses" id="courseList" data-screen-label="03 Course list">
+
+    <details class="course" data-level="foundation" data-topic="sculpt">
+      <summary>
+        <span class="col-num">01</span>
+        <div class="col-title">
+          <div class="title">Foundation · The Hera Method</div>
+          <div class="sub">Start from zero — prep, structure, and the first ten essentials.</div>
+        </div>
+        <div class="col-tags"><span class="tag">Foundation</span><span class="tag">Sculpting</span></div>
+        <div class="col-meta"><div class="price">On request</div><div class="dur">14 lessons · 6h</div></div>
+        <span class="col-chev">＋</span>
+      </summary>
+      <div class="panel">
+        <div class="img" style="background-image:url('img/nail-23.jpg')"></div>
+        <div>
+          <p class="desc">The starting point. Everything Hera wishes she'd known on day one — from how to read a nail bed, to sterilising tools, to building an even apex without filing the life out of your hand. Filmed in close-up so you can see every stroke.</p>
+          <h4>You will learn</h4>
+          <ul>
+            <li>Anatomy of the natural nail &amp; healthy prep</li>
+            <li>Gel chemistry: builder, hard, and soft</li>
+            <li>Form fitting and apex placement</li>
+            <li>Filing, refining, and finish</li>
+          </ul>
+          <h4>Includes</h4>
+          <p class="desc" style="margin-top:0">14 video lessons · PDF kit list · cohort chat for 90 days · certificate of completion.</p>
+          <div class="actions">
+            <a class="btn accent" href="mailto:fatemeamiri.job@gmail.com?subject=Enrol%20·%20Foundation%20%C2%B7%20The%20Hera%20Method">Enrol now <span class="arrow">→</span></a>
+            <a class="btn ghost" href="#">Preview lesson 1</a>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="course" data-level="intermediate" data-topic="sculpt">
+      <summary>
+        <span class="col-num">02</span>
+        <div class="col-title">
+          <div class="title">Gel Extensions · Sculpted Forms</div>
+          <div class="sub">Long stiletto, almond, ballerina, square — built without tips.</div>
+        </div>
+        <div class="col-tags"><span class="tag">Intermediate</span><span class="tag">Sculpting</span></div>
+        <div class="col-meta"><div class="price">On request</div><div class="dur">18 lessons · 9h</div></div>
+        <span class="col-chev">＋</span>
+      </summary>
+      <div class="panel">
+        <div class="img" style="background-image:url('img/nail-red-silver.jpg')"></div>
+        <div>
+          <p class="desc">Build long, structurally sound extensions in five shapes — without plastic tips. Real-time sculpting with multiple angles, including the awkward pinky and the everyone-fights-it ring finger.</p>
+          <h4>Modules</h4>
+          <ol>
+            <li>Form prep &amp; alignment</li>
+            <li>Stiletto · Almond · Ballerina</li>
+            <li>Square &amp; tapered square</li>
+            <li>Refining the structure</li>
+            <li>Maintenance &amp; safe removal</li>
+          </ol>
+          <div class="actions">
+            <a class="btn accent" href="mailto:fatemeamiri.job@gmail.com?subject=Enrol%20·%20Gel%20Extensions">Enrol now <span class="arrow">→</span></a>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="course" data-level="advanced" data-topic="3d">
+      <summary>
+        <span class="col-num">03</span>
+        <div class="col-title">
+          <div class="title">3D Florals · The Sculpted Garden</div>
+          <div class="sub">Petals, stamens, and translucent resin work.</div>
+        </div>
+        <div class="col-tags"><span class="tag">Advanced</span><span class="tag">3D</span></div>
+        <div class="col-meta"><div class="price">On request</div><div class="dur">22 lessons · 11h</div></div>
+        <span class="col-chev">＋</span>
+      </summary>
+      <div class="panel">
+        <div class="img" style="background-image:url('img/nail-clear-flowers-02.jpg')"></div>
+        <div>
+          <p class="desc">The course people fly in for, taught online. Build dimensional flowers, leaves, and vines that survive a handshake — including the translucent resin work seen in the Anthurium editorial.</p>
+          <h4>Highlights</h4>
+          <ul>
+            <li>Petal anatomy &amp; gel viscosity</li>
+            <li>Building lift without weight</li>
+            <li>Translucent resin pours</li>
+            <li>Anchoring decorative elements</li>
+          </ul>
+          <div class="actions">
+            <a class="btn accent" href="mailto:fatemeamiri.job@gmail.com?subject=Enrol%20·%203D%20Florals">Enrol now <span class="arrow">→</span></a>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="course" data-level="intermediate" data-topic="paint">
+      <summary>
+        <span class="col-num">04</span>
+        <div class="col-title">
+          <div class="title">Hand-Painting · Brushwork</div>
+          <div class="sub">Florals, faces, and freehand line work.</div>
+        </div>
+        <div class="col-tags"><span class="tag">Intermediate</span><span class="tag">Painting</span></div>
+        <div class="col-meta"><div class="price">On request</div><div class="dur">16 lessons · 7h</div></div>
+        <span class="col-chev">＋</span>
+      </summary>
+      <div class="panel">
+        <div class="img" style="background-image:url('img/nail-colorful-01.jpg')"></div>
+        <div>
+          <p class="desc">A painter's approach to nail art — brush economy, layering, and how to hide a mistake nobody else will ever see.</p>
+          <h4>Studies</h4>
+          <ul>
+            <li>Daisies, anthuriums, peonies</li>
+            <li>Faces &amp; loose portraits</li>
+            <li>Single-stroke leaves</li>
+            <li>Color theory for tiny canvases</li>
+          </ul>
+          <div class="actions">
+            <a class="btn accent" href="mailto:fatemeamiri.job@gmail.com?subject=Enrol%20·%20Hand-Painting">Enrol now <span class="arrow">→</span></a>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="course" data-level="advanced" data-topic="chrome">
+      <summary>
+        <span class="col-num">05</span>
+        <div class="col-title">
+          <div class="title">Chrome, Foil &amp; Mirror</div>
+          <div class="sub">Liquid metal, dichroic, baroque relief.</div>
+        </div>
+        <div class="col-tags"><span class="tag">Advanced</span><span class="tag">Chrome</span></div>
+        <div class="col-meta"><div class="price">On request</div><div class="dur">15 lessons · 6.5h</div></div>
+        <span class="col-chev">＋</span>
+      </summary>
+      <div class="panel">
+        <div class="img" style="background-image:url('img/nail-blue-baroque.jpg')"></div>
+        <div>
+          <p class="desc">The signature mirror finish — without smudges, without dullness. Plus baroque relief work using sculpting gel and chrome powder.</p>
+          <h4>You'll cover</h4>
+          <ul>
+            <li>Base color &amp; topcoat chemistry</li>
+            <li>Powder selection by light condition</li>
+            <li>Baroque sculpting &amp; chrome stamping</li>
+            <li>Sealing for two-week wear</li>
+          </ul>
+          <div class="actions">
+            <a class="btn accent" href="mailto:fatemeamiri.job@gmail.com?subject=Enrol%20·%20Chrome%2C%20Foil%20%26%20Mirror">Enrol now <span class="arrow">→</span></a>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="course" data-level="masterclass" data-topic="3d">
+      <summary>
+        <span class="col-num">06</span>
+        <div class="col-title">
+          <div class="title">Masterclass · Sculptural Couture</div>
+          <div class="sub">The Hera signature — talons, mesh, and editorial sets.</div>
+        </div>
+        <div class="col-tags"><span class="tag">Masterclass</span><span class="tag">Editorial</span></div>
+        <div class="col-meta"><div class="price">On request</div><div class="dur">26 lessons · 14h</div></div>
+        <span class="col-chev">＋</span>
+      </summary>
+      <div class="panel">
+        <div class="img" style="background-image:url('img/nail-black-prototypes.jpg')"></div>
+        <div>
+          <p class="desc">A full editorial set, taught end-to-end. From mood board to mesh-gauntlet integration. This is the course Hera almost didn't release.</p>
+          <h4>Includes</h4>
+          <ul>
+            <li>Brief reading &amp; concept boards</li>
+            <li>Sculpting accessory-integrated talons</li>
+            <li>On-set finishing &amp; quick fixes</li>
+            <li>Photographing your own work</li>
+            <li>1:1 portfolio review</li>
+          </ul>
+          <div class="actions">
+            <a class="btn accent" href="mailto:fatemeamiri.job@gmail.com?subject=Enrol%20·%20Sculptural%20Couture%20Masterclass">Enrol now <span class="arrow">→</span></a>
+          </div>
+        </div>
+      </div>
+    </details>
+
+  </section>
+
+  <!-- Closing -->
+  <section class="section-dark" style="text-align:center; margin-top:120px;">
+    <div class="shell">
+      <p class="eyebrow" style="color:rgba(244,239,233,.55)">Need a custom curriculum?</p>
+      <h2 class="h-section" style="color:#faf6f0; margin-top:18px">1:1 mentorship<br><em style="font-family:var(--serif); font-style:italic; color:var(--accent-soft)">available</em>.</h2>
+      <p class="italic-lead" style="color:rgba(244,239,233,.7); margin-top:18px; max-width:50ch; margin-left:auto; margin-right:auto;">For salons, students, and brand teams — a six-week 1:1 program built around your hands and your work.</p>
+      <a class="btn accent" href="mailto:fatemeamiri.job@gmail.com?subject=1%3A1%20Mentorship%20Inquiry" style="margin-top:36px">Inquire <span class="arrow">→</span></a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div><div class="footer-mark">Hera Nail</div><p style="margin-top:18px; font-family:var(--serif); font-style:italic; font-size:16px; color:var(--ink-soft); max-width:32ch;">Nail art, editorial &amp; education from the Dubai studio of Hera (Fateme Amiri).</p></div>
+    <div><h4>Visit</h4><a href="book.html">Book a session</a><a href="courses.html">Online courses</a><a href="shop.html">The shop</a></div>
+    <div><h4>About</h4><a href="editorial.html">Editorial</a><a href="press.html">Press &amp; features</a><a href="contact.html">Contact</a></div>
+    <div><h4>Follow</h4><a href="#">Instagram</a><a href="#">TikTok</a><a href="#">YouTube</a><a href="mailto:fatemeamiri.job@gmail.com">Email</a></div>
+  </div>
+  <div class="footer-bottom"><span>© 2024 Hera Nail Studio</span><span>All rights reserved</span></div>
+</footer>
+
+<script>
+  const tog = document.getElementById('navToggle');
+  const links = document.getElementById('navLinks');
+  tog?.addEventListener('click', () => links.classList.toggle('open'));
+
+  // Dropdown filtering
+  let levelF = 'all', topicF = 'all';
+  const courseList = document.getElementById('courseList');
+  const countEl = document.getElementById('count');
+
+  function setFilter(kind, val, labelEl, dd) {
+    if (kind === 'level') levelF = val;
+    else topicF = val;
+    dd.querySelectorAll('button').forEach(b => b.classList.toggle('is-active', b.dataset[kind] === val));
+    labelEl.textContent = dd.querySelector('button.is-active').textContent;
+    dd.removeAttribute('open');
+    apply();
+  }
+
+  function apply() {
+    let n = 0;
+    courseList.querySelectorAll('.course').forEach(c => {
+      const lv = c.dataset.level, tp = c.dataset.topic;
+      const match = (levelF === 'all' || levelF === lv) && (topicF === 'all' || topicF === tp);
+      c.style.display = match ? '' : 'none';
+      if (match) n++;
+    });
+    countEl.textContent = `${n} course${n === 1 ? '' : 's'}`;
+  }
+
+  const levelDD = document.getElementById('levelDD');
+  const topicDD = document.getElementById('topicDD');
+  levelDD.querySelectorAll('button').forEach(b => {
+    b.addEventListener('click', () => setFilter('level', b.dataset.level, document.getElementById('levelLabel'), levelDD));
+  });
+  topicDD.querySelectorAll('button').forEach(b => {
+    b.addEventListener('click', () => setFilter('topic', b.dataset.topic, document.getElementById('topicLabel'), topicDD));
+  });
+
+  // Close dropdowns on outside click
+  document.addEventListener('click', (e) => {
+    document.querySelectorAll('.dropdown[open]').forEach(d => {
+      if (!d.contains(e.target)) d.removeAttribute('open');
+    });
+  });
+</script>
+</body>
+</html>
