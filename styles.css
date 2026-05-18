@@ -99,6 +99,8 @@ input, select, textarea { font: inherit; color: inherit; background: transparent
   transition: color .25s ease;
 }
 .nav-links a:hover { color: var(--accent); }
+.nav-whatsapp { color: var(--accent) !important; border: 1px solid var(--accent); padding: 6px 14px !important; border-radius: 2px; }
+.nav-whatsapp:hover { background: var(--accent); color: var(--bg) !important; }
 .nav-links a.active::after {
   content: "";
   position: absolute;
