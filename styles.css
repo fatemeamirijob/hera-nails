@@ -48,6 +48,7 @@ input, select, textarea { font: inherit; color: inherit; background: transparent
   backdrop-filter: saturate(140%) blur(14px);
   -webkit-backdrop-filter: saturate(140%) blur(14px);
   border-bottom: 1px solid var(--rule);
+  padding-top: env(safe-area-inset-top);
 }
 .site-header.is-dark {
   background: color-mix(in oklch, oklch(0.12 0 0) 70%, transparent);
