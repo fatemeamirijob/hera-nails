@@ -137,10 +137,14 @@ input, select, textarea { font: inherit; color: inherit; background: transparent
     align-items: flex-start;
     border-bottom: 1px solid var(--rule);
     transform: translateY(-110%);
-    transition: transform .35s cubic-bezier(.6,.05,.2,1);
-    z-index: -1;
+    visibility: hidden;
+    transition: transform .35s cubic-bezier(.6,.05,.2,1), visibility 0s .35s;
   }
-  .nav-links.open { transform: translateY(0); }
+  .nav-links.open {
+    transform: translateY(0);
+    visibility: visible;
+    transition: transform .35s cubic-bezier(.6,.05,.2,1), visibility 0s 0s;
+  }
   .nav-toggle {
     display: inline-flex;
     align-items: center;
