@@ -266,6 +266,80 @@
 
   .modal .actions { display: flex; gap: 12px; justify-content: flex-end; }
 
+  /* Product detail modal */
+  .pdp-modal {
+    position: fixed; inset: 0;
+    background: rgba(14,12,11,.6);
+    z-index: 80;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .3s;
+  }
+  .pdp-modal.open { opacity: 1; pointer-events: auto; }
+  .pdp-card {
+    background: var(--bg);
+    max-width: 720px;
+    width: 100%;
+    max-height: 90vh; overflow-y: auto;
+    border: 1px solid var(--rule);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    transform: translateY(20px);
+    transition: transform .3s;
+  }
+  .pdp-modal.open .pdp-card { transform: translateY(0); }
+  @media (max-width: 600px) { .pdp-card { grid-template-columns: 1fr; } }
+
+  .pdp-main-img {
+    aspect-ratio: 4/5;
+    background-size: cover;
+    background-position: center;
+  }
+  .pdp-info {
+    padding: clamp(24px, 3vw, 40px);
+    display: flex; flex-direction: column; gap: 20px;
+  }
+  .pdp-info .pdp-name {
+    font-family: var(--display);
+    font-size: clamp(24px, 2.8vw, 34px);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-weight: 400;
+    line-height: 1.05;
+  }
+  .pdp-info .pdp-sub {
+    font-family: var(--serif); font-style: italic;
+    color: var(--ink-soft); font-size: 15px; margin-top: -10px;
+  }
+  .pdp-info .pdp-price {
+    font-family: var(--display); font-size: 28px; letter-spacing: 0.04em;
+  }
+  .pdp-options-label {
+    font-size: 10.5px; letter-spacing: 0.4em;
+    text-transform: uppercase; color: var(--mute); font-weight: 500;
+  }
+  .pdp-options {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+  }
+  .pdp-options .opt-img {
+    aspect-ratio: 1/1;
+    background-size: cover; background-position: center;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color .2s;
+  }
+  .pdp-options .opt-img.selected { border-color: var(--ink); }
+  .pdp-info .pdp-actions {
+    display: flex; flex-direction: column; gap: 10px; margin-top: auto;
+  }
+  .pdp-close {
+    position: absolute; top: 16px; right: 16px;
+    font-size: 10.5px; letter-spacing: 0.32em; text-transform: uppercase;
+    background: var(--bg); padding: 6px 10px; border: 1px solid var(--rule);
+  }
+  .pdp-wrap { position: relative; }
+
   /* Hero block */
   .shop-hero {
     max-width: var(--max);
@@ -312,11 +386,11 @@
   <div class="cat-bar" data-screen-label="02 Categories">
     <span class="label">Filter</span>
     <button class="active" data-cat="all">All</button>
-    <button data-cat="press-ons">Press-On Nails</button>
-    <button data-cat="care">Cuticle Oil</button>
-    <button data-cat="tools">Tools &amp; Extras</button>
-    <button data-cat="art">Original Paintings</button>
-    <span class="right" id="resultCount">12 products</span>
+    <button data-cat="classic">Classic Set</button>
+    <button data-cat="colourful">Colourful</button>
+    <button data-cat="french">French</button>
+    <button data-cat="editorial">Editorial</button>
+    <span class="right" id="resultCount">4 products</span>
   </div>
 
   <!-- Product grid -->
@@ -324,6 +398,30 @@
     <!-- Filled by JS -->
   </section>
 </main>
+
+<!-- Product detail modal -->
+<div class="pdp-modal" id="pdpModal">
+  <div class="pdp-wrap">
+    <button class="pdp-close" id="pdpClose">Close ✕</button>
+    <div class="pdp-card">
+      <div class="pdp-main-img" id="pdpMainImg"></div>
+      <div class="pdp-info">
+        <div>
+          <div class="pdp-name" id="pdpName"></div>
+          <div class="pdp-sub" id="pdpSub"></div>
+        </div>
+        <div class="pdp-price" id="pdpPrice"></div>
+        <div>
+          <div class="pdp-options-label">Choose your option</div>
+          <div class="pdp-options" id="pdpOptions"></div>
+        </div>
+        <div class="pdp-actions">
+          <button class="btn accent" id="pdpAddBtn" style="justify-content:center">Add to bag +</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Floating cart trigger -->
 <button class="cart-fab empty" id="cartFab">
@@ -406,21 +504,14 @@
 
   // ── Products ──────────────────────────────────────
   const products = [
-    { id: 'po-blue', cat: 'press-ons', name: 'Sapphire Baroque', sub: 'Stiletto · long · 10 pcs', price: 250, img: 'img/nail-blue-baroque.jpg', badge: 'New' },
-    { id: 'po-red',  cat: 'press-ons', name: 'Anthurium Red',   sub: 'Stiletto · extra long · 10 pcs', price: 290, img: 'img/nail-red-silver.jpg' },
-    { id: 'po-clear', cat: 'press-ons', name: 'Translucent Garden', sub: 'Almond · 3D florals · 10 pcs', price: 340, img: 'img/nail-clear-flowers-02.jpg', badge: 'Bestseller' },
-    { id: 'po-color', cat: 'press-ons', name: 'Y2K Bloom', sub: 'Coffin · hand-painted · 10 pcs', price: 240, img: 'img/nail-colorful-01.jpg' },
-    { id: 'po-orange', cat: 'press-ons', name: 'Pearl Stud Set', sub: 'Almond · short · 10 pcs', price: 210, img: 'img/nail-orange-silver.jpg' },
-    { id: 'po-mix',   cat: 'press-ons', name: 'Mercury Mix', sub: 'Short squoval · chrome · 10 pcs', price: 220, img: 'img/nail-chrome-mixed.jpg' },
-
-    { id: 'oil-rose', cat: 'care', name: 'Cuticle Oil · Rose', sub: 'Squalane &amp; Damascena · 15 ml', price: 100, img: 'img/nail-clear-flower.jpg' },
-    { id: 'oil-fig',  cat: 'care', name: 'Cuticle Oil · Fig',  sub: 'Squalane &amp; Fig leaf · 15 ml', price: 100, img: 'img/nail-23.jpg', badge: 'New' },
-
-    { id: 'tool-kit', cat: 'tools', name: 'Studio Kit · Essentials', sub: 'Brush, file, pusher, buffer', price: 310, img: 'img/nail-black-prototypes.jpg' },
-    { id: 'tool-brush', cat: 'tools', name: 'Sculpting Brush · Hera 04', sub: 'Kolinsky · short flat', price: 140, img: 'img/nail-egyptian-ring.jpg' },
-
-    { id: 'art-01', cat: 'art', name: 'Untitled (Anthurium)', sub: 'Oil on linen · 60×80 cm', price: 5300, img: 'img/hero-04-lily.jpg', badge: '1 of 1' },
-    { id: 'art-02', cat: 'art', name: 'Hand Studies III', sub: 'Pencil on paper · 30×42 cm', price: 1400, img: 'img/hero-02-mesh.jpg', badge: '1 of 1' }
+    { id: 'classic',    cat: 'classic',    name: 'Classic Set',  sub: 'Press-on nails · 10 pcs', price: 290, img: 'img/basic.jpg',
+      variants: ['img/basic.jpg'] },
+    { id: 'colourful',  cat: 'colourful',  name: 'Colourful',    sub: 'Press-on nails · 10 pcs', price: 290, img: 'img/colourful.jpg',
+      variants: ['img/colourful.jpg'] },
+    { id: 'french',     cat: 'french',     name: 'French',       sub: 'Press-on nails · 10 pcs', price: 290, img: 'img/french.jpg',
+      variants: ['img/french.jpg'] },
+    { id: 'editorial',  cat: 'editorial',  name: 'Editorial',    sub: 'Press-on nails · 10 pcs', price: 350, img: 'img/nail-red-silver.jpg',
+      variants: ['img/nail-red-silver.jpg', 'img/ed-polka-rocks.jpg', 'img/nail-chrome-mixed.jpg'] },
   ];
 
   const grid = document.getElementById('productGrid');
@@ -430,9 +521,9 @@
     const list = products.filter(p => cat === 'all' || p.cat === cat);
     grid.innerHTML = list.map(p => `
       <article class="product">
-        <div class="img" style="background-image:url('${p.img}')">
+        <div class="img" style="background-image:url('${p.img}'); cursor:pointer;" data-pdp="${p.id}">
           ${p.badge ? `<span class="badge">${p.badge}</span>` : ''}
-          <button class="add" data-id="${p.id}">Add to bag +</button>
+          <button class="add" data-id="${p.id}">View options</button>
         </div>
         <div class="name">${p.name}</div>
         <div class="meta">
@@ -442,10 +533,41 @@
       </article>
     `).join('');
     countEl.textContent = `${list.length} product${list.length === 1 ? '' : 's'}`;
-    grid.querySelectorAll('.add').forEach(b => b.addEventListener('click', e => {
-      addToCart(b.dataset.id);
-    }));
+    grid.querySelectorAll('[data-pdp]').forEach(el => el.addEventListener('click', () => openPDP(el.dataset.pdp)));
+    grid.querySelectorAll('.add').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); openPDP(b.dataset.id); }));
   }
+
+  // ── Product detail modal ──────────────────────────
+  const pdpModal = document.getElementById('pdpModal');
+  let pdpSelected = null;
+  let pdpProduct = null;
+
+  function openPDP(id) {
+    pdpProduct = products.find(p => p.id === id);
+    if (!pdpProduct) return;
+    pdpSelected = pdpProduct.variants[0];
+    document.getElementById('pdpName').textContent = pdpProduct.name;
+    document.getElementById('pdpSub').innerHTML = pdpProduct.sub;
+    document.getElementById('pdpPrice').textContent = pdpProduct.price + ' AED';
+    document.getElementById('pdpMainImg').style.backgroundImage = `url('${pdpSelected}')`;
+    const opts = document.getElementById('pdpOptions');
+    opts.innerHTML = pdpProduct.variants.map((v, i) => `
+      <div class="opt-img ${i === 0 ? 'selected' : ''}" style="background-image:url('${v}')" data-src="${v}"></div>
+    `).join('');
+    opts.querySelectorAll('.opt-img').forEach(el => el.addEventListener('click', () => {
+      opts.querySelectorAll('.opt-img').forEach(x => x.classList.remove('selected'));
+      el.classList.add('selected');
+      pdpSelected = el.dataset.src;
+      document.getElementById('pdpMainImg').style.backgroundImage = `url('${pdpSelected}')`;
+    }));
+    pdpModal.classList.add('open');
+  }
+
+  document.getElementById('pdpClose').addEventListener('click', () => pdpModal.classList.remove('open'));
+  pdpModal.addEventListener('click', e => { if (e.target === pdpModal) pdpModal.classList.remove('open'); });
+  document.getElementById('pdpAddBtn').addEventListener('click', () => {
+    if (pdpProduct) { addToCart(pdpProduct.id); pdpModal.classList.remove('open'); }
+  });
 
   document.querySelectorAll('.cat-bar button').forEach(b => {
     b.addEventListener('click', () => {
