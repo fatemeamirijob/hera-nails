@@ -318,18 +318,29 @@
   .pdp-options-label {
     font-size: 10.5px; letter-spacing: 0.4em;
     text-transform: uppercase; color: var(--mute); font-weight: 500;
+    margin-bottom: 10px;
   }
   .pdp-options {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
   }
   .pdp-options .opt-img {
-    aspect-ratio: 1/1;
+    aspect-ratio: 3/4;
     background-size: cover; background-position: center;
     cursor: pointer;
-    border: 2px solid transparent;
-    transition: border-color .2s;
+    border: 3px solid transparent;
+    transition: border-color .2s, transform .2s;
+    position: relative;
   }
+  .pdp-options .opt-img:hover { transform: scale(1.02); }
   .pdp-options .opt-img.selected { border-color: var(--ink); }
+  .pdp-options .opt-img.selected::after {
+    content: "✓";
+    position: absolute; bottom: 8px; right: 8px;
+    background: var(--ink); color: var(--bg);
+    width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+  }
   .pdp-info .pdp-actions {
     display: flex; flex-direction: column; gap: 10px; margin-top: auto;
   }
@@ -506,12 +517,12 @@
   const products = [
     { id: 'classic',    cat: 'classic',    name: 'Classic Set',  sub: 'Press-on nails · 10 pcs · incl. VAT', price: 220, img: 'img/basic.jpg',
       variants: ['img/basic.jpg'] },
-    { id: 'colourful',  cat: 'colourful',  name: 'Colourful',    sub: 'Press-on nails · 10 pcs · incl. VAT', price: 300, img: 'img/colourful.jpg',
-      variants: ['img/colourful.jpg'] },
     { id: 'french',     cat: 'french',     name: 'French',       sub: 'Press-on nails · 10 pcs · incl. VAT', price: 220, img: 'img/french.jpg',
       variants: ['img/french.jpg'] },
+    { id: 'colourful',  cat: 'colourful',  name: 'Colourful',    sub: 'Press-on nails · 10 pcs · incl. VAT', price: 300, img: 'img/colourful.jpg',
+      variants: ['img/colourful.jpg', 'img/nail-chrome-mixed.jpg', 'img/nail-black-prototypes.jpg', 'img/nail-colorful-01.jpg'] },
     { id: 'editorial',  cat: 'editorial',  name: 'Editorial',    sub: 'Press-on nails · 10 pcs · incl. VAT · from', price: 400, img: 'img/nail-red-silver.jpg',
-      variants: ['img/nail-red-silver.jpg', 'img/ed-polka-rocks.jpg', 'img/nail-chrome-mixed.jpg'] },
+      variants: ['img/nail-red-silver.jpg', 'img/ed-polka-rocks.jpg', 'img/nail-23.jpg'] },
   ];
 
   const grid = document.getElementById('productGrid');
