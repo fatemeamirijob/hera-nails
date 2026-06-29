@@ -518,13 +518,13 @@
 
   // ── Products ──────────────────────────────────────
   const products = [
-    { id: 'classic',   cat: 'classic',   name: 'Classic Set', sub: 'Press-on nails · 10 pcs · incl. VAT', price: 220, img: 'img/classic/basic.jpg',
+    { id: 'classic',   cat: 'classic',   name: 'Classic Set', sub: 'Press-on nails · 10 pcs · incl. VAT', price: 220, ziina: 'https://pay.ziina.com/nailsbyhera/xSvOMjCea?source=app', img: 'img/classic/basic.jpg',
       variants: ['img/classic/basic.jpg', 'img/classic/IMG_7365.JPG', 'img/classic/IMG_1147.jpg'] },
-    { id: 'french',    cat: 'french',    name: 'French',      sub: 'Press-on nails · 10 pcs · incl. VAT', price: 220, img: 'img/french/french.jpg',
+    { id: 'french',    cat: 'french',    name: 'French',      sub: 'Press-on nails · 10 pcs · incl. VAT', price: 220, ziina: 'https://pay.ziina.com/nailsbyhera/xSvOMjCea?source=app', img: 'img/french/french.jpg',
       variants: ['img/french/french.jpg', 'img/french/IMG_7425_8.25.17_PM.JPG', 'img/french/IMG_9701_SnapseedCopy_8.25.17_PM.JPG'] },
-    { id: 'colourful', cat: 'colourful', name: 'Colourful',   sub: 'Press-on nails · 10 pcs · incl. VAT', price: 300, img: 'img/colourful/colourful.jpg',
+    { id: 'colourful', cat: 'colourful', name: 'Colourful',   sub: 'Press-on nails · 10 pcs · incl. VAT', price: 300, ziina: 'https://pay.ziina.com/nailsbyhera/1Wcj5Sn86?source=app', img: 'img/colourful/colourful.jpg',
       variants: ['img/colourful/colourful.jpg', 'img/colourful/IMG_3482_8.26.00_PM.JPG', 'img/colourful/IMG_5076_8.26.00_PM.jpg', 'img/colourful/IMG_6201.JPG', 'img/colourful/nail-black-prototypes.jpg', 'img/colourful/nail-chrome-mixed.jpg', 'img/colourful/nail-colorful-01.jpg'] },
-    { id: 'editorial', cat: 'editorial', name: 'Editorial',   sub: 'Press-on nails · 10 pcs · incl. VAT · from', price: 400, img: 'img/editorial/ed-polka-rocks.jpg',
+    { id: 'editorial', cat: 'editorial', name: 'Editorial',   sub: 'Press-on nails · 10 pcs · incl. VAT · from', price: 400, ziina: 'https://pay.ziina.com/nailsbyhera/833vivmpM?source=app', img: 'img/editorial/ed-polka-rocks.jpg',
       variants: ['img/editorial/ed-polka-rocks.jpg', 'img/editorial/nail-red-silver.jpg', 'img/editorial/IMG_7528.JPG', 'img/editorial/IMG_9235.jpg', 'img/editorial/IMG_9249.JPG', 'img/editorial/nail-23.jpg', 'img/editorial/nail-clear-flower.jpg', 'img/editorial/nail-clear-flowers-02.jpg', 'img/editorial/nail-egyptian-ring.jpg'] },
   ];
 
@@ -580,7 +580,7 @@
   document.getElementById('pdpClose').addEventListener('click', () => pdpModal.classList.remove('open'));
   pdpModal.addEventListener('click', e => { if (e.target === pdpModal) pdpModal.classList.remove('open'); });
   document.getElementById('pdpAddBtn').addEventListener('click', () => {
-    if (pdpProduct) { addToCart(pdpProduct.id); pdpModal.classList.remove('open'); }
+    if (pdpProduct && pdpProduct.ziina) window.open(pdpProduct.ziina, '_blank');
   });
 
   document.querySelectorAll('.cat-bar button').forEach(b => {
